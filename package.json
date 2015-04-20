@@ -1,0 +1,22 @@
+{
+    "name"         : "ephem-calc"
+  , "version"      : "1.0.0"
+  , "description"  : "Calculator/parser for JPL ephemeris data, returning RA/Dec and distance"
+  , "repository"   : {
+      "type"       : "git"
+    , "url"        : "git://github.com/vukicevic/ephem-calc.git"
+  }
+  , "main"         : "index.js"
+  , "scripts"      : {
+      "test"       : "echo \"Error: no test specified\" && exit 1"
+    , "install"    : "node-gyp rebuild"
+  }
+  , "author"       : "Nenad Vukicevic <vukicevic@gmail.com> (https://github.com/vukicevic)"
+  , "homepage"     : "https://github.com/vukicevic/crunch"
+  , "license"      : "GPLv3"
+  , "gypfile"      : true
+  , "dependencies" : {
+      "bindings"   : "^1.2.1"
+    , "nan"        : "^1.7.0"
+  }
+}

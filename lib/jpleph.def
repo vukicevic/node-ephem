@@ -1,0 +1,10 @@
+LIBRARY jpleph
+EXPORTS
+   jpl_init_ephemeris                     @1
+   jpl_close_ephemeris                    @2
+   jpl_state                              @3
+   jpl_pleph                              @4
+   jpl_get_double                         @5
+   jpl_get_long                           @6
+   jpl_get_constant                       @7
+   jpl_init_error_code                    @8
