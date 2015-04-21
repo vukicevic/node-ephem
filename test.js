@@ -1,11 +1,13 @@
 var ephem = require('./index');
 
-//lnxp1900p2050.202
-//linux_p1550p2650.430
+//ephem.load('./eph/lnxp1900p2050.202');
+//ephem.load('./eph/lnxp2000.403');
+//ephem.load('./eph/lnx1900.405');
+//ephem.load('./eph/linux_p1550p2650.430');
+ephem.load('./eph/lnxm13000p17000.431');
 
-var calc = ephem('/home/nenad/workspace/sandbox/jpleph/eph/linux_p1550p2650.430');
-
-calc(2457132.5, 4, function (err, coords) {
-  console.log(err);
-  console.log(coords);
+ephem.find(ephem.MARS, ephem.EARTH, 2457134, function (err, position, velocity) {
+  console.log(position);
+  console.log(ephem.equitorial(position));
+  console.log(ephem.magnitude(velocity));
 });

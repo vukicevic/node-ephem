@@ -61,12 +61,12 @@ NAN_METHOD(unload) {
 NAN_METHOD(find) {
   NanScope();
 
-  if (args.Length() < 3 || !args[2]->IsFunction()) {
+  if (args.Length() < 4 || !args[3]->IsFunction()) {
     NanThrowTypeError("WrondArgumentsProvided");
     NanReturnUndefined();
   }
 
-  Local<Function> cb = args[2].As<Function>();
+  Local<Function> cb = args[3].As<Function>();
   Local<Value> argv[3];
 
   argv[1] = NanNull();
@@ -74,26 +74,28 @@ NAN_METHOD(find) {
 
   if (!p) {
     argv[0] = NanNew("EphemerisNotLoaded");
-  } else if (!args[0]->IsNumber() || !args[1]->IsNumber()) {
+  } else if (!args[0]->IsNumber() || !args[1]->IsNumber() || !args[2]->IsNumber()) {
     argv[0] = NanNew("InvalidArguments");
   } else {
-    double state[6];
-    double time = args[0]->NumberValue();
-    int body    = args[1]->NumberValue();
+    int body     = args[0]->NumberValue();
+    int observer = args[1]->NumberValue();
+    double time  = args[2]->NumberValue();
 
-    int code = jpl_pleph(p, time, body, 3, state, 1);
+    double result[6];
+
+    int code = jpl_pleph(p, time, body, observer, result, 1);
 
     if (code == 0) {
       Local<Object> pos = NanNew<Object>();
       Local<Object> vel = NanNew<Object>();
 
-      pos->Set(NanNew("x"), NanNew(state[0]));
-      pos->Set(NanNew("y"), NanNew(state[1]));
-      pos->Set(NanNew("z"), NanNew(state[2]));
+      pos->Set(NanNew("x"), NanNew(result[0]));
+      pos->Set(NanNew("y"), NanNew(result[1]));
+      pos->Set(NanNew("z"), NanNew(result[2]));
 
-      vel->Set(NanNew("dx"), NanNew(state[3]));
-      vel->Set(NanNew("dy"), NanNew(state[4]));
-      vel->Set(NanNew("dz"), NanNew(state[5]));
+      vel->Set(NanNew("dx"), NanNew(result[3]));
+      vel->Set(NanNew("dy"), NanNew(result[4]));
+      vel->Set(NanNew("dz"), NanNew(result[5]));
 
       argv[0] = NanNull();
       argv[1] = pos;
