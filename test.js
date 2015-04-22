@@ -6,8 +6,12 @@ var ephem = require('./index');
 //ephem.load('./eph/linux_p1550p2650.430');
 ephem.load('./eph/lnxm13000p17000.431');
 
-ephem.find(ephem.MARS, ephem.EARTH, 2457134, function (err, position, velocity) {
+var time = ephem.julian(new Date("2015-04-21T12:00:00.000Z"));
+
+ephem.find(ephem.MARS, ephem.PLUTO, time, function (err, position, velocity) {
   console.log(position);
-  console.log(ephem.equitorial(position));
-  console.log(ephem.magnitude(velocity));
+});
+
+ephem.radec(ephem.MARS, time, function (err, position) {
+  console.log(position);
 });
