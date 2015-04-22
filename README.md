@@ -1,5 +1,5 @@
-EphemCalc
-=========
+node-ephem
+==========
 
 Parse JPL planetary ephemerides and calculate the position of planets (and moon) at a given time.
 
@@ -16,7 +16,7 @@ Usage
 Require the module.
 
 ```javascript
-var ephem = require('ephem-calc');
+var ephem = require('node-ephem');
 ```
 
 Load ephemerides which you downloaded, by providing a path to it:
@@ -57,7 +57,7 @@ equatorial | position | Cartesian to Equаtorial
 Planets
 -------
 
-EphemCalc provides a convenient name to code mapping via exported constants
+node-ephem provides a convenient name to code mapping via exported constants
 
 Planet | Code
 --- | ---
