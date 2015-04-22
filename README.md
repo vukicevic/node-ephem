@@ -25,12 +25,20 @@ Load ephemerides which you downloaded, by providing a path to it:
 ephem.load('./eph/linux_p1550p2650.430');
 ```
 
-Find Mars, observing from Earth, at this instant:
+Find Mars, relative to the Sun, at this instant:
 
 ```javascript
-ephem.find(ephem.MARS, ephem.EARTH, ephem.julian(new Date), function (err, position, velocity) {
-  console.log(ephem.equirial(position));
-  console.log(ephem.magnitude(velocity) + 'km/s');
+ephem.find(ephem.MARS, ephem.SUN, ephem.julian(new Date), function (err, position, velocity) {
+  console.log(position);
+  console.log(velocity);
+});
+```
+
+Find RA/Dec of Neptune at this moment, adjusted for light-time:
+
+```javascript
+ephem.radec(ephem.NEPTUNE, ephem.julian(new Date), function (err, radec) {
+  console.log(radec);
 });
 ```
 
@@ -42,9 +50,9 @@ Function | Parameters | Description
 load | path, callback | Load planetary ephemerides file
 unload | | Unload file
 find | body, observer, time, callback | Find the position of body looking from observer at time
-julian | date | convert Date to Julian day (J2000 epoch)
-equatorial | position | Cartesian to Equitorisal position returned by find
-magnitude | velocity | Magnitude of velocity returned by find
+radec | body, time, callback | Find RA/Dec of body adjusted for light-time
+julian | date | convert Date to Julian day (J2000 epoch, TT)
+equatorial | position | Cartesian to Equаtorial
 
 Planets
 -------

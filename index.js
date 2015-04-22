@@ -5,12 +5,16 @@ var a2k = 1.49597870691E+8;
 var c2k = 299792458/1000;
 
 /* Split angle into (degrees)hours (arc)minutes (arc)seconds */
-function format(deg) {
-  var d = Math.floor(deg);
-  var m = Math.floor((deg - d) * 60);
+function format(deg, hours) {
+  if (hours)
+    deg = (24 + deg/15) % 24;
+
+  var o = deg < 0 ? Math.ceil : Math.floor;
+  var d = o(deg);
+  var m = o((deg - d) * 60);
   var s = (deg - d - m/60) * 3600;
 
-  return [d, m, s];
+  return [d, Math.abs(m), parseFloat(Math.abs(s).toFixed(hours?2:1))];
 }
 
 /* Date to julian day with Terrestrial Time (TT) adjustment
@@ -29,12 +33,14 @@ function julian (date) {
 function equatorial (p) {
   if (p) {
     var r = magnitude(p.x, p.y, p.z);
+    var a = r2d * Math.atan2(p.y, p.x);
+    var d = r2d * Math.atan2(p.z, magnitude(p.x, p.y, 0)); //Math.asin(p.z / r)
 
     return {
 
         'Δ' : r * a2k
-      , 'α' : format(r2d * Math.atan2(p.y, p.x) / 15)
-      , 'δ' : format(90 - r2d * Math.acos(p.z / r))
+      , 'α' : format(a, true)
+      , 'δ' : format(d, false)
 
     }
   }
