@@ -60,34 +60,29 @@ function magnitude (x, y, z) {
  * distance of the body again at time T-dt, updating D. Repeat 3 times to
  * converge on dt. Finally, find position of body@T-dt from Earth@T.
  */
-function radec (body, time, callback) {
-  var dt = 0,
-      op, // observer position
+function radec (eph, body, time) {
+  var op, // observer position
       bp; // body/planet position
 
-  // Position of Earth@T
-  ephem.find(3, 11, time, function (err, position, velocity) { op = position });
+  // Calculate dt light-time correction
+  function dt (op, bp) { return (magnitude(bp.x - op.x, bp.y - op.y, bp.z - op.z) * a2k / c2k) / 86400 };
 
-  var iter = function (err, position, velocity) {
-    bp  = position;
-    // Earth-Body distance in km @T-dt, divide by speed of light km/s, divide by seconds/day to get dt in Julian days
-    dt = (magnitude(bp.x - op.x, bp.y - op.y, bp.z - op.z) * a2k / c2k) / 86400;
-  };
+  // Position of Earth@T
+  op = eph.find(3, 11, time);
 
   // Inital calculation of dt using D@T
-  ephem.find(body, 11, time - dt, iter);
+  bp = eph.find(body, 11, time);
 
   // First correction of dt
-  ephem.find(body, 11, time - dt, iter);
+  bp = eph.find(body, 11, time - dt(op, bp));
 
   // Second correction of dt
-  ephem.find(body, 11, time - dt, iter);
+  bp = eph.find(body, 11, time - dt(op, bp));
 
-  // Find RA/Dec, adjusted for light-time
-  ephem.find(body, 11, time - dt, function (err, position, velocity) {
-    callback(null, equatorial({ 'x' : position.x - op.x, 'y' : position.y - op.y, 'z' : position.z - op.z }));
-  });
+  // Find final body position, adjusted for light-time
+  bp = eph.find(body, 11, time - dt(op, bp))
 
+  return equatorial({ 'x' : bp.x - op.x, 'y' : bp.y - op.y, 'z' : bp.z - op.z });
 }
 
 module.exports = {
@@ -106,11 +101,8 @@ module.exports = {
 
   , 'equatorial' : equatorial
   , 'julian'     : julian
-
   , 'radec'      : radec
 
   , 'load'       : ephem.load
-  , 'unload'     : ephem.unload
-  , 'find'       : ephem.find
 
 };

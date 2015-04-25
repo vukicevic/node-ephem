@@ -22,37 +22,41 @@ var ephem = require('node-ephem');
 Load ephemerides which you downloaded, by providing a path to it:
 
 ```javascript
-ephem.load('./eph/linux_p1550p2650.430');
+var e430 = ephem.load('./eph/linux_p1550p2650.430');
 ```
 
 Find Mars, relative to the Sun, at this instant:
 
 ```javascript
-ephem.find(ephem.MARS, ephem.SUN, ephem.julian(new Date), function (err, position, velocity) {
-  console.log(position);
-  console.log(velocity);
-});
+var position = e430.find(ephem.MARS, ephem.SUN, ephem.julian(new Date));
+console.log(position);
 ```
 
 Find RA/Dec of Neptune at this moment, adjusted for light-time:
 
 ```javascript
-ephem.radec(ephem.NEPTUNE, ephem.julian(new Date), function (err, radec) {
-  console.log(radec);
-});
+var radec = ephem.radec(e431, ephem.NEPTUNE, ephem.julian(new Date));
+console.log(radec);
 ```
 
 Functions
 ---------
 
+node-ephem exports:
+
 Function | Parameters | Description
 ---|---|---
-load | path, callback | Load planetary ephemerides file
-unload | | Unload file
-find | body, observer, time, callback | Find the position of body looking from observer at time
-radec | body, time, callback | Find RA/Dec of body adjusted for light-time
+load | path | Load planetary ephemerides file, returns ephemeris object
+radec | ephObj, body, time | Find RA/Dec of body adjusted for light-time
 julian | date | convert Date to Julian day (J2000 epoch, TT)
 equatorial | position | Cartesian to Equаtorial
+
+ephemeris object:
+
+Function | Parameters | Description
+---|---|---
+find | body, observer, time | Find the position of body looking from observer at time
+constants | | Returns constants from loaded ephemeris file
 
 Planets
 -------
