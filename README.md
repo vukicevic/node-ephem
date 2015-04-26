@@ -1,14 +1,14 @@
 node-ephem
 ==========
 
-Parse JPL planetary ephemerides and calculate the position of planets (and moon) at a given time.
+Parse JPL DE planetary ephemerides and calculate the position of planets (and moon) at a given time.
 
 This module is based on [Project Pluto](http://www.projectpluto.com/jpl_eph.htm)'s code for calculating planetary positions from JPL ephemerides.
 
 Required
 --------
 
-This module uses publicly available planetery ephemerides which can be downloaded from NASA's Jet Propulsion Laboratory [FTP server](ftp://ssd.jpl.nasa.gov/pub/eph/planets/Linux/). More information on which file to chose can be found [here](ftp://ssd.jpl.nasa.gov/pub/eph/planets/README.txt).
+This module uses publicly available planetery ephemerides which can be downloaded from NASA's Jet Propulsion Laboratory [FTP server](http://tinyurl.com/qabeu3g). More information on which file to chose can be found [here](http://tinyurl.com/olea84t).
 
 Usage
 -----
@@ -28,14 +28,14 @@ var e430 = ephem.load('./eph/linux_p1550p2650.430');
 Find Mars, relative to the Sun, at this instant:
 
 ```javascript
-var position = e430.find(ephem.MARS, ephem.SUN, ephem.julian(new Date));
+var position = e430.find(ephem.bodies.MARS, ephem.bodies.SUN, ephem.julian(new Date));
 console.log(position);
 ```
 
 Find RA/Dec of Neptune at this moment, adjusted for light-time:
 
 ```javascript
-var radec = ephem.radec(e431, ephem.NEPTUNE, ephem.julian(new Date));
+var radec = ephem.radec(e430, ephem.bodies.NEPTUNE, ephem.julian(new Date));
 console.log(radec);
 ```
 
@@ -65,14 +65,14 @@ node-ephem provides a convenient name to code mapping via exported constants
 
 Planet | Code
 --- | ---
-ephem.MERCURY | 1
-ephem.VENUS | 2
-ephem.EARTH | 3
-ephem.MARS | 4
-ephem.JUPITER | 5
-ephem.SATURN | 6
-ephem.URANUS | 7
-ephem.NEPTUNE | 8
-ephem.PLUTO | 9
-ephem.MOON | 10
-ephem.SUN | 11
+ephem.bodies.MERCURY | 1
+ephem.bodies.VENUS | 2
+ephem.bodies.EARTH | 3
+ephem.bodies.MARS | 4
+ephem.bodies.JUPITER | 5
+ephem.bodies.SATURN | 6
+ephem.bodies.URANUS | 7
+ephem.bodies.NEPTUNE | 8
+ephem.bodies.PLUTO | 9
+ephem.bodies.MOON | 10
+ephem.bodies.SUN | 11

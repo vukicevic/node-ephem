@@ -85,24 +85,28 @@ function radec (eph, body, time) {
   return equatorial({ 'x' : bp.x - op.x, 'y' : bp.y - op.y, 'z' : bp.z - op.z });
 }
 
+var bodies = {
+
+    'MERCURY' : 1
+  , 'VENUS'   : 2
+  , 'EARTH'   : 3
+  , 'MARS'    : 4
+  , 'JUPITER' : 5
+  , 'SATURN'  : 6
+  , 'URANUS'  : 7
+  , 'NEPTUNE' : 8
+  , 'PLUTO'   : 9
+  , 'MOON'    : 10
+  , 'SUN'     : 11
+
+};
+
 module.exports = {
 
-    'MERCURY'    : 1
-  , 'VENUS'      : 2
-  , 'EARTH'      : 3
-  , 'MARS'       : 4
-  , 'JUPITER'    : 5
-  , 'SATURN'     : 6
-  , 'URANUS'     : 7
-  , 'NEPTUNE'    : 8
-  , 'PLUTO'      : 9
-  , 'MOON'       : 10
-  , 'SUN'        : 11
-
+    'bodies'     : bodies
   , 'equatorial' : equatorial
   , 'julian'     : julian
   , 'radec'      : radec
-
   , 'load'       : ephem.load
 
 };
