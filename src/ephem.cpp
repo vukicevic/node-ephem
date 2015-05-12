@@ -11,6 +11,7 @@ Persistent<Function> Ephem::constructor;
 
 Ephem::Ephem(char* filename) {
   p = jpl_init_ephemeris(filename, constants, values);
+  status = jpl_init_error_code();
 }
 
 Ephem::~Ephem() {}
@@ -24,6 +25,7 @@ void Ephem::Init(Handle<Object> exports) {
 
   NODE_SET_PROTOTYPE_METHOD(tpl, "find", Find);
   NODE_SET_PROTOTYPE_METHOD(tpl, "constants", Constants);
+  NODE_SET_PROTOTYPE_METHOD(tpl, "status", Status);
 
   NanAssignPersistent(constructor, tpl->GetFunction());
   exports->Set(NanNew("load"), tpl->GetFunction());
@@ -95,6 +97,14 @@ NAN_METHOD(Ephem::Constants) {
   } else {
     NanReturnUndefined();
   }
+}
+
+NAN_METHOD(Ephem::Status) {
+  NanScope();
+
+  Ephem* obj = ObjectWrap::Unwrap<Ephem>(args.Holder());
+
+  NanReturnValue(obj->status);
 }
 
 void InitAll(Handle<Object> exports) {
