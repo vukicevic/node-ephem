@@ -57,6 +57,7 @@ Function | Parameters | Description
 ---|---|---
 find | body, observer, time | Find the position of body looking from observer at time
 constants | | Returns constants from loaded ephemeris file
+status | | Returns 0 on succesful load, otherwise error code
 
 Planets
 -------
