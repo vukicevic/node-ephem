@@ -1,8 +1,9 @@
 var ephem = require('bindings')('ephem.node');
 
-var r2d = 180 / Math.PI;
-var a2k = 1.49597870691E+8;
-var c2k = 299792458/1000;
+var r2d = 180 / Math.PI;       // degrees per radian
+var a2k = 149597870700 / 1000; // au in km
+var c2k = 299792458 / 1000;    // speed of light in km/s
+var s2d = 86400;               // seconds per day
 
 /* Split angle into (degrees)hours (arc)minutes (arc)seconds */
 function format(deg, hours) {
@@ -15,7 +16,7 @@ function format(deg, hours) {
   var s = (deg - d - m/60) * 3600;
 
   return [d, Math.abs(m), parseFloat(Math.abs(s).toFixed(hours?2:1))];
-}
+};
 
 /* Date to julian day with Terrestrial Time (TT) adjustment
  *
@@ -49,7 +50,7 @@ function equatorial (p) {
 /* Magnitude of vector */
 function magnitude (x, y, z) {
   return Math.sqrt(x*x + y*y + z*z);
-}
+};
 
 /* Right Ascension/Declination of Body from Earth, adjusted for light-time
  *
@@ -61,29 +62,21 @@ function magnitude (x, y, z) {
  * converge on dt. Finally, find position of body@T-dt from Earth@T.
  */
 function radec (eph, body, time) {
-  var op, // observer position
-      bp; // body/planet position
-
-  // Calculate dt light-time correction
-  function dt (op, bp) { return (magnitude(bp.x - op.x, bp.y - op.y, bp.z - op.z) * a2k / c2k) / 86400 };
-
   // Position of Earth@T
-  op = eph.find(3, 11, time);
+  var op = eph.find(3, 11, time);
 
-  // Inital calculation of dt using D@T
-  bp = eph.find(body, 11, time);
+  for (var bp, dt = 0, i = 0; i < 4; i++) {
+    // Postion of body@T-dt
+    bp = eph.find(body, 11, time - dt);
 
-  // First correction of dt
-  bp = eph.find(body, 11, time - dt(op, bp));
-
-  // Second correction of dt
-  bp = eph.find(body, 11, time - dt(op, bp));
-
-  // Find final body position, adjusted for light-time
-  bp = eph.find(body, 11, time - dt(op, bp))
+    // Calculate dt light-time correction. The time it takes
+    // light to travel a distance between two points in days.
+    // Constant is portion of day for light to travel 1 AU
+    dt = magnitude(bp.x - op.x, bp.y - op.y, bp.z - op.z) * 0.005775518331089534;
+  }
 
   return equatorial({ 'x' : bp.x - op.x, 'y' : bp.y - op.y, 'z' : bp.z - op.z });
-}
+};
 
 var bodies = {
 
