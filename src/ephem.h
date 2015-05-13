@@ -17,8 +17,11 @@ class Ephem : public node::ObjectWrap {
   static NAN_METHOD(Find);
   static NAN_METHOD(Constants);
   static NAN_METHOD(Status);
+  static NAN_METHOD(Observe);
 
   static v8::Persistent<v8::Function> constructor;
+
+  static inline double Magnitude(double x, double y, double z);
 
   void *p;
   int status;
