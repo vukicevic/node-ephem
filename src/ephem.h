@@ -15,16 +15,16 @@ class Ephem : public node::ObjectWrap {
 
   static NAN_METHOD(New);
   static NAN_METHOD(Find);
-  static NAN_METHOD(Constants);
-  static NAN_METHOD(Status);
   static NAN_METHOD(Observe);
+  static NAN_METHOD(Status);
 
   static v8::Persistent<v8::Function> constructor;
 
-  static inline double Magnitude(double x, double y, double z);
+  static inline double Magnitude(const double x, const double y, const double z);
 
   void *p;
   int status;
+
   char constants[JPL_MAX_N_CONSTANTS][6];
   double values[JPL_MAX_N_CONSTANTS];
 };

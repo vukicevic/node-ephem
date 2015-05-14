@@ -24,15 +24,19 @@ var equal = function (x, y) {
   return Math.abs(x - y) < 2e-11;
 };
 
+var stats = e430t.status();
+
 reader.eachLine('./eph/testpo.430t', function (line, last) {
   if (!start) {
     start = line === 'EOT';
   } else {
     var p = parse(line);
-    var r = e430t.find(p.t, p.c, p.d);
 
-    if (r) {
+    if (p.d => stats.start && p.d <= stats.end) {
+      var r = e430t.find(p.t, p.c, p.d);
       assert(equal(r[map[p.x]], p.v));
+    } else {
+      console.log('Julian day out of range: ' + p.d);
     }
   }
 });

@@ -12,8 +12,8 @@ using namespace v8;
 Persistent<Function> Ephem::constructor;
 
 Ephem::Ephem(char* filename) {
-  p = jpl_init_ephemeris(filename, constants, values);
-  status = jpl_init_error_code();
+  p          = jpl_init_ephemeris(filename, constants, values);
+  status     = jpl_init_error_code();
 }
 
 Ephem::~Ephem() {}
@@ -23,10 +23,9 @@ void Ephem::Init(Handle<Object> exports) {
 
   Local<FunctionTemplate> tpl = NanNew<FunctionTemplate>(New);
   tpl->SetClassName(NanNew("Ephem"));
-  tpl->InstanceTemplate()->SetInternalFieldCount(1);
+  tpl->InstanceTemplate()->SetInternalFieldCount(4);
 
   NODE_SET_PROTOTYPE_METHOD(tpl, "find", Find);
-  NODE_SET_PROTOTYPE_METHOD(tpl, "constants", Constants);
   NODE_SET_PROTOTYPE_METHOD(tpl, "status", Status);
   NODE_SET_PROTOTYPE_METHOD(tpl, "observe", Observe);
 
@@ -56,9 +55,10 @@ NAN_METHOD(Ephem::Find) {
 
   if (args.Length() < 3) {
     NanReturnUndefined();
-  } else if (!obj->p) {
-    NanReturnUndefined();
   } else if (!args[0]->IsNumber() || !args[1]->IsNumber() || !args[2]->IsNumber()) {
+    NanReturnUndefined();
+  } else if (!obj->p) {
+    obj->status = -1;
     NanReturnUndefined();
   } else {
     int body     = args[0]->NumberValue();
@@ -87,31 +87,38 @@ NAN_METHOD(Ephem::Find) {
   }
 }
 
-NAN_METHOD(Ephem::Constants) {
-  NanScope();
-
-  Ephem* obj = ObjectWrap::Unwrap<Ephem>(args.Holder());
-
-  if (obj->p) {
-    Local<Object> map = NanNew<Object>();
-
-    for (int i = 0; i < JPL_MAX_N_CONSTANTS; i++) {
-      std::string c(obj->constants[i], 6);
-      map->Set(NanNew(c), NanNew(obj->values[i]));
-    }
-
-    NanReturnValue(map);
-  } else {
-    NanReturnUndefined();
-  }
-}
-
 NAN_METHOD(Ephem::Status) {
   NanScope();
 
   Ephem* obj = ObjectWrap::Unwrap<Ephem>(args.Holder());
 
-  NanReturnValue(obj->status);
+  if (obj->status == 0) {
+    Local<Object> cns = NanNew<Object>();
+
+    cns->Set(NanNew("AU2KM"), NanNew(jpl_get_double(obj->p, JPL_EPHEM_AU_IN_KM)));
+
+    int max = jpl_get_long(obj->p, JPL_EPHEM_N_CONSTANTS);
+
+    for (int i = 0; i < max; i++) {
+      std::string c(obj->constants[i], 6);
+      cns->Set(NanNew(c), NanNew(obj->values[i]));
+    }
+
+    Local<Object> map = NanNew<Object>();
+
+    map->Set(NanNew("status"), NanNew(obj->status));
+
+    map->Set(NanNew("version"), NanNew((int) jpl_get_long(obj->p, JPL_EPHEM_EPHEMERIS_VERSION)));
+    map->Set(NanNew("start"), NanNew(jpl_get_double(obj->p, JPL_EPHEM_START_JD)));
+    map->Set(NanNew("end"), NanNew(jpl_get_double(obj->p, JPL_EPHEM_END_JD)));
+    map->Set(NanNew("step"), NanNew(jpl_get_double(obj->p, JPL_EPHEM_STEP)));
+
+    map->Set(NanNew("constants"), cns);
+
+    NanReturnValue(map);
+  } else {
+    NanReturnUndefined();
+  }
 }
 
 /* Right Ascension/Declination of Body from Earth, adjusted for light-time
@@ -130,9 +137,10 @@ NAN_METHOD(Ephem::Observe) {
 
   if (args.Length() < 3) {
     NanReturnUndefined();
-  } else if (!obj->p) {
-    NanReturnUndefined();
   } else if (!args[0]->IsNumber() || !args[1]->IsNumber() || !args[2]->IsNumber()) {
+    NanReturnUndefined();
+  } else if (!obj->p) {
+    obj->status = -1;
     NanReturnUndefined();
   } else {
     int body     = args[0]->NumberValue();
@@ -175,7 +183,7 @@ NAN_METHOD(Ephem::Observe) {
   }
 }
 
-double Ephem::Magnitude (double x, double y, double z) {
+double Ephem::Magnitude (const double x, const double y, const double z) {
   return sqrt(x*x + y*y + z*z);
 }
 
