@@ -4,37 +4,39 @@ var assert = require('assert');
 describe('Ephem Tests', function () {
 
   before(function () {
-    e202 = ephem.load('./eph/lnxp1900p2050.202');
-    e431 = ephem.load('./eph/lnxm13000p17000.431');
+    // e202 = ephem.load('./eph/lnxp1900p2050.202');
+    e430 = ephem.load('./eph/linux_p1550p2650.430t');
+    // e431 = ephem.load('./eph/lnxm13000p17000.431');
 
-    assert.equal(e202.status(), 0);
-    assert.equal(e431.status(), 0);
+    // assert.equal(e202.status(), 0);
+    assert.equal(e430.status(), 0);
+    // assert.equal(e431.status(), 0);
 
     time = ephem.julian(new Date("2015-04-21T12:00:00.000Z"));
   });
 
-  var e202, e431, time;
+  var e202, e430, e431, time;
 
   describe('Position', function () {
 
-    it('should find Pluto 431', function (done) {
-      assert.ok(e431.find(ephem.bodies.MARS, ephem.bodies.PLUTO, time));
+    it('should find Pluto 430', function (done) {
+      assert.ok(e430.find(ephem.bodies.MARS, ephem.bodies.PLUTO, time));
 
       done();
     });
 
-    it('should find Pluto 202', function (done) {
-      assert.ok(e202.find(ephem.bodies.MARS, ephem.bodies.PLUTO, time));
+    // it('should find Pluto 202', function (done) {
+    //   assert.ok(e202.find(ephem.bodies.MARS, ephem.bodies.PLUTO, time));
 
-      done();
-    });
+    //   done();
+    // });
 
   });
 
   describe('Right Ascension, Desclination', function () {
 
     it('should find Mercury', function (done) {
-      var position = ephem.radec(e431, ephem.bodies.MERCURY, time)
+      var position = ephem.equatorial(e430.observe(ephem.bodies.MERCURY, ephem.bodies.EARTH, time));
 
       assert.equal(position.α[0], 2, 'Mercury R.A. incorrect');
       assert.equal(position.α[1], 41, 'Mercury R.A. incorrect');
@@ -47,7 +49,7 @@ describe('Ephem Tests', function () {
     });
 
     it('should find Venus', function (done) {
-      var position = ephem.radec(e431, ephem.bodies.VENUS, time);
+      var position = ephem.equatorial(e430.observe(ephem.bodies.VENUS, ephem.bodies.EARTH, time));
 
       assert.equal(position.α[0], 4, 'Venus R.A. incorrect');
       assert.equal(position.α[1], 37, 'Venus R.A. incorrect');
@@ -60,7 +62,7 @@ describe('Ephem Tests', function () {
     });
 
     it('should find Mars', function (done) {
-      var position = ephem.radec(e431, ephem.bodies.MARS, time);
+      var position = ephem.equatorial(e430.observe(ephem.bodies.MARS, ephem.bodies.EARTH, time));
 
       assert.equal(position.α[0], 2, 'Mars R.A. incorrect');
       assert.equal(position.α[1], 50, 'Mars R.A. incorrect');
@@ -74,7 +76,7 @@ describe('Ephem Tests', function () {
 
 
     it('should find Jupiter', function (done) {
-      var position = ephem.radec(e431, ephem.bodies.JUPITER, time);
+      var position = ephem.equatorial(e430.observe(ephem.bodies.JUPITER, ephem.bodies.EARTH, time));
 
       assert.equal(position.α[0], 9, 'Jupiter R.A. incorrect');
       assert.equal(position.α[1], 1, 'Jupiter R.A. incorrect');
@@ -88,7 +90,7 @@ describe('Ephem Tests', function () {
 
 
     it('should find Saturn', function (done) {
-      var position = ephem.radec(e431, ephem.bodies.SATURN, time);
+      var position = ephem.equatorial(e430.observe(ephem.bodies.SATURN, ephem.bodies.EARTH, time));
 
       assert.equal(position.α[0], 16, 'Saturn R.A. incorrect');
       assert.equal(position.α[1], 7, 'Saturn R.A. incorrect');
@@ -102,7 +104,7 @@ describe('Ephem Tests', function () {
 
 
     it('should find Uranus', function (done) {
-      var position = ephem.radec(e431, ephem.bodies.URANUS, time);
+      var position = ephem.equatorial(e430.observe(ephem.bodies.URANUS, ephem.bodies.EARTH, time));
 
       assert.equal(position.α[0], 1, 'Uranus R.A. incorrect');
       assert.equal(position.α[1], 3, 'Uranus R.A. incorrect');
@@ -115,7 +117,7 @@ describe('Ephem Tests', function () {
     });
 
     it('should find Neptune', function (done) {
-      var position = ephem.radec(e431, ephem.bodies.NEPTUNE, time);
+      var position = ephem.equatorial(e430.observe(ephem.bodies.NEPTUNE, ephem.bodies.EARTH, time));
 
       assert.equal(position.α[0], 22, 'Neptune R.A. incorrect');
       assert.equal(position.α[1], 43, 'Neptune R.A. incorrect');
