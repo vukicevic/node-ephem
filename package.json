@@ -18,6 +18,5 @@
   , "dependencies"  : {
       "bindings"    : "^1.2.1"
     , "nan"         : "^1.8.0"
-    , "line-reader" : "latest"
   }
 }

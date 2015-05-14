@@ -1,8 +1,15 @@
-var reader = require('line-reader');
 var assert = require('assert');
-
+var reader = require('readline');
+var fs     = require('fs');
 var ephem  = require('./index');
-var e430t  = ephem.load('./eph/linux_p1550p2650.430t');
+
+var rd    = reader.createInterface({
+    input: fs.createReadStream('./eph/testpo.430t'),
+    output: process.stdout,
+    terminal: false
+});
+
+var e430t = ephem.load('./eph/linux_p1550p2650.430t');
 
 var start = false;
 
@@ -26,13 +33,13 @@ var equal = function (x, y) {
 
 var stats = e430t.status();
 
-reader.eachLine('./eph/testpo.430t', function (line, last) {
+rd.on('line', function(line) {
   if (!start) {
     start = line === 'EOT';
   } else {
     var p = parse(line);
 
-    if (p.d => stats.start && p.d <= stats.end) {
+    if (p.d >= stats.start && p.d <= stats.end) {
       var r = e430t.find(p.t, p.c, p.d);
       assert(equal(r[map[p.x]], p.v));
     } else {
