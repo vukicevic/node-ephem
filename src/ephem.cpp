@@ -67,7 +67,7 @@ NAN_METHOD(Ephem::Find) {
 
     double result[6];
 
-    int code = jpl_pleph(obj->p, time, body, observer, result, 0);
+    int code = jpl_pleph(obj->p, time, body, observer, result, 1);
 
     if (code == 0) {
       Local<Object> pos = NanNew<Object>();
@@ -75,6 +75,10 @@ NAN_METHOD(Ephem::Find) {
       pos->Set(NanNew("x"), NanNew(result[0]));
       pos->Set(NanNew("y"), NanNew(result[1]));
       pos->Set(NanNew("z"), NanNew(result[2]));
+
+      pos->Set(NanNew("dx"), NanNew(result[3]));
+      pos->Set(NanNew("dy"), NanNew(result[4]));
+      pos->Set(NanNew("dz"), NanNew(result[5]));
 
       NanReturnValue(pos);
     } else {
