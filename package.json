@@ -1,7 +1,7 @@
 {
     "name"          : "node-ephem"
-  , "version"       : "1.3.0"
-  , "description"   : "Calculator/parser for JPL ephemeris data, returning RA/Dec and distance"
+  , "version"       : "1.4.0"
+  , "description"   : "Calculator/parser for JPL ephemeris data"
   , "repository"    : {
       "type"        : "git"
     , "url"         : "git://github.com/vukicevic/node-ephem.git"
